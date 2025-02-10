@@ -1,16 +1,15 @@
 package com.spring.ecommerce.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Getter
+@Setter
 @Builder
 @Entity
 public class Product {
@@ -19,14 +18,11 @@ public class Product {
     private Integer id;
     private String name;
     private String description;
-    @Column(name = "available_quantity")
+    @Column(name = "availableQuantity")
     private Double availableQuantity;
     private BigDecimal price;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
-
-
-
 
 }
