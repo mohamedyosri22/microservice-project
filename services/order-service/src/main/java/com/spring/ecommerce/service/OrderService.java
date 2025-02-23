@@ -4,6 +4,7 @@ import com.spring.ecommerce.dto.OrderMapper;
 import com.spring.ecommerce.dto.OrderRequest;
 import com.spring.ecommerce.dto.PurchaseRequest;
 import com.spring.ecommerce.exception.BusinessException;
+import com.spring.ecommerce.model.OrderLineRequest;
 import com.spring.ecommerce.model.OrderLineService;
 import com.spring.ecommerce.repository.OrderRepo;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,8 +29,10 @@ public class OrderService {
         //purchase the product --> product-ms RestTemplate
         productClient.purchaseProducts(request.products());
 
+        //persist order
         var order = orderRepo.save(mapper.toOrder(request));
 
+        //persist orderlines
         for(PurchaseRequest purchaseRequest: request.products()){
             orderLineService.saveOrderLine(
                     new OrderLineRequest(
@@ -40,10 +43,6 @@ public class OrderService {
                     )
             );
         }
-
-        //persist order
-
-        //persist orderlines
 
         //start payment process
 
