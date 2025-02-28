@@ -1,9 +1,8 @@
 package com.spring.ecommerce.service;
 
-import com.spring.ecommerce.dto.OrderMapper;
-import com.spring.ecommerce.dto.OrderRequest;
-import com.spring.ecommerce.dto.PurchaseRequest;
+import com.spring.ecommerce.dto.*;
 import com.spring.ecommerce.exception.BusinessException;
+import com.spring.ecommerce.kafka.OrderProducer;
 import com.spring.ecommerce.model.OrderLineRequest;
 import com.spring.ecommerce.model.OrderLineService;
 import com.spring.ecommerce.repository.OrderRepo;
@@ -12,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,13 +22,14 @@ public class OrderService {
     private final OrderRepo orderRepo;
     private final OrderMapper mapper;
     private final OrderLineService orderLineService;
+    private final OrderProducer orderProducer;
     public Integer createOrder(OrderRequest request) {
         //check the customer
         var customer = customerClient.findCustomerById(request.customerId())
                 .orElseThrow(()->new BusinessException(String.format("customer not found with id %s",request.customerId())));
 
         //purchase the product --> product-ms RestTemplate
-        productClient.purchaseProducts(request.products());
+        var PurchasedProducts = productClient.purchaseProducts(request.products());
 
         //persist order
         var order = orderRepo.save(mapper.toOrder(request));
@@ -45,9 +47,22 @@ public class OrderService {
         }
 
         //todo start payment process
+        orderProducer.sendOrderConfirmation(
+                new OrderConfirmation(
+                        request.reference(),
+                        request.amount(),
+                        request.paymentMethod(),
+                        customer,
+                        PurchasedProducts
+                )
+        );
+        return order.getId();
+    }
 
-        //send order confirmation --> notification-ms
-
-        return null;
+    public List<OrderResponse> findAllOrders(){
+        return orderRepo.findAll()
+                .stream()
+                .map(mapper::fromOrder)
+                .collect(Collectors.toList());
     }
 }
