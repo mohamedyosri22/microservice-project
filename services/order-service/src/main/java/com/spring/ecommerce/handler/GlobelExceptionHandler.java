@@ -1,7 +1,7 @@
-package com.spring.ecommerce.exception;
+package com.spring.ecommerce.handler;
 
+import com.spring.ecommerce.exception.BusinessException;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,8 +14,8 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @RestControllerAdvice
 public class GlobelExceptionHandler {
-    @ExceptionHandler(ProductPurchaseException.class)
-    public ResponseEntity<String> handle(ProductPurchaseException exp) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<String> handle(BusinessException exp) {
         return ResponseEntity
                 .status(BAD_REQUEST)
                 .body(exp.getMessage());

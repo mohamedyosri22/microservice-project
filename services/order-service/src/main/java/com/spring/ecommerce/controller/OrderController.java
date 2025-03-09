@@ -28,4 +28,9 @@ public class OrderController {
     public ResponseEntity<List<OrderResponse>> getAllOrders(){
         return new ResponseEntity<>(orderService.findAllOrders(),HttpStatus.FOUND);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable("id")Integer id){
+        return new ResponseEntity<OrderResponse>(orderService.findById(id),HttpStatus.FOUND);
+    }
 }

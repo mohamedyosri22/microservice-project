@@ -15,4 +15,11 @@ public class OrderLineMapper {
                 .Quantity(request.quantity())
                 .build();
     }
+
+    public OrderLineResponse toOrderLineResponse(OrderLine orderLine) {
+        return new OrderLineResponse(
+          orderLine.getId(), orderLine.getQuantity()
+        );
+
+    }
 }

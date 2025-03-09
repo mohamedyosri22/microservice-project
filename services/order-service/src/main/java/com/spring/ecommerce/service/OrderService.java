@@ -3,8 +3,10 @@ package com.spring.ecommerce.service;
 import com.spring.ecommerce.dto.*;
 import com.spring.ecommerce.exception.BusinessException;
 import com.spring.ecommerce.kafka.OrderProducer;
+import com.spring.ecommerce.model.Order;
 import com.spring.ecommerce.model.OrderLineRequest;
 import com.spring.ecommerce.model.OrderLineService;
+import com.spring.ecommerce.payment.PaymentClient;
 import com.spring.ecommerce.repository.OrderRepo;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class OrderService {
     private final OrderMapper mapper;
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
+    private final PaymentClient paymentClient;
     public Integer createOrder(OrderRequest request) {
         //check the customer
         var customer = customerClient.findCustomerById(request.customerId())
@@ -46,7 +49,16 @@ public class OrderService {
             );
         }
 
-        //todo start payment process
+        var paymentRequest = new PaymentRequest(
+                request.amount(),
+                request.paymentMethod(),
+                request.id(),
+                request.reference(),
+                customer
+        );
+
+        paymentClient.requestOrderPayment(paymentRequest);
+
         orderProducer.sendOrderConfirmation(
                 new OrderConfirmation(
                         request.reference(),
@@ -64,5 +76,12 @@ public class OrderService {
                 .stream()
                 .map(mapper::fromOrder)
                 .collect(Collectors.toList());
+    }
+
+    public OrderResponse findById(Integer id) {
+        return orderRepo.findById(id)
+                .map(mapper::fromOrder)
+                .orElseThrow(()->new BusinessException(String.format("order with id %d not found",id)));
+
     }
 }

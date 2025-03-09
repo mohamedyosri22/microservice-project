@@ -1,4 +1,4 @@
-package com.spring.ecommerce.exception;
+package com.spring.ecommerce.handler;
 
 import java.util.Map;
 
