@@ -5,6 +5,7 @@ import com.spring.ecommerce.dto.OrderResponse;
 import com.spring.ecommerce.model.Order;
 import com.spring.ecommerce.service.OrderService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/order")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class OrderController {
     private final OrderService orderService;
 

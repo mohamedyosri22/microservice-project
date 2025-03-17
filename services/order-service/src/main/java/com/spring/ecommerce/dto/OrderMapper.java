@@ -1,7 +1,9 @@
 package com.spring.ecommerce.dto;
 
 import com.spring.ecommerce.model.Order;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
 public class OrderMapper {
     public Order toOrder(OrderRequest request){
         return Order.builder()
