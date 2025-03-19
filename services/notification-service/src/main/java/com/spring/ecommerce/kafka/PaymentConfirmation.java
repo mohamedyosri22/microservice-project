@@ -13,9 +13,7 @@ public record PaymentConfirmation(
         BigDecimal amount,
         PaymentMethod paymentMethod,
         String customerFirstName,
-
         String customerLastName,
-
         String customerEmail
 ) {
 }

@@ -41,14 +41,14 @@ public class CustomerController {
     public ResponseEntity<Boolean> ifCustomerExits(@PathVariable("customer-id")
                                                    String CustomerId) {
         return new ResponseEntity<>(customerService.ifCustomerExits(CustomerId),
-                HttpStatus.FOUND);
+                HttpStatus.OK);
     }
 
     @GetMapping("/{customer-id}")
     public ResponseEntity<CustomerResponse> getCustomer(@PathVariable("customer-id")
                                                         String customerId) {
         return new ResponseEntity<CustomerResponse>(customerService.getCustomer(customerId),
-                HttpStatus.FOUND);
+                HttpStatus.OK);
     }
 
     @DeleteMapping("/{customer-id}")
