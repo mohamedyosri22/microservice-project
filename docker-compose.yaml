@@ -96,6 +96,19 @@ services:
     networks:
       - microservices-net
 
+  keyclock:
+    container_name: keyclock-ms
+    image: keyclock
+    ports:
+      - 9098:8080
+    environment:
+      KEYCLOCK_ADMIN: admin
+      KEYCLOCK_ADMIN_PASSWORD: admin
+    networks:
+      - microservices-net
+    command:
+      - "start-dev"
+
 networks:
   microservices-net:
     driver: bridge
